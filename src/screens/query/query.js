@@ -2,29 +2,8 @@ import React, { Component } from 'react';
 import './query.css';
 import QueryForm from '../../collection/query-form/query-form';
 import { connect } from 'react-redux';
-import { getTrails } from './query-helpers';
+import { getPlaces } from './query-helpers';
 import ResultCard from '../../collection/result-card/result-card';
-
-let QueryDumb = ({
-    query,
-    handleQuery,
-    currentLocation,
-    sendQuery,
-    walks,
-}) =>
-    <div className="query">
-        <QueryForm value={ query }
-            onChange={ handleQuery }
-            onClick={ sendQuery }
-        />
-        {/* {
-            walks.map((walk, i) => 
-                <ResultCard title={ walk.result } 
-                    distance={ calcDist(currentLocation) } 
-                />
-            )
-        } */}
-    </div>
 
 let mapStateToProps = (state) => ({
     currentLocation: state.currentLocation,
@@ -40,11 +19,11 @@ let enhance = connect(
 )
 
 class Query extends Component {
-    constructor() {
+    constructor(props) {
         super()
         this.state = {
             query: '',
-            walks: [],
+            results: [],
         }
     }
 
@@ -53,19 +32,30 @@ class Query extends Component {
     }
 
     sendQuery = async () => {
-        let walks = await getTrails(this.state.query)
-        this.setState({ walks })
-        console.log(walks);
+        let results = await getPlaces({
+            query: this.state.query,
+            lat: this.props.currentLocation.lat,
+            lng: this.props.currentLocation.lng,
+        });
+        this.setState({ results })
     }
 
     render() {
-        return <QueryDumb 
-            { ...this.props } 
-            { ...this.state }
-            handleQuery={ this.handleQuery } 
-            sendQuery={ this.sendQuery }
+        return (
+        <div className="query">
+            <QueryForm value={ this.state.query }
+                onChange={ this.handleQuery }
+                onClick={ this.sendQuery }
             />
-    }
+            {/* {
+                walks.map((walk, i) => 
+                    <ResultCard title={ walk.result } 
+                        distance={ calcDist(currentLocation) } 
+                    />
+                )
+            } */}
+        </div>
+    )}
 }
 
 export default enhance(Query);
