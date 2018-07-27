@@ -2,25 +2,16 @@ import React, { Component } from 'react';
 import './query.css';
 import QueryForm from '../../collection/query-form/query-form';
 import { connect } from 'react-redux';
-import { getPlaces } from './query-helpers';
+import { 
+    getPlaces,
+    calcDistance, 
+} from './query-helpers';
 import ResultCard from '../../collection/result-card/result-card';
-
-let mapStateToProps = (state) => ({
-    currentLocation: state.currentLocation,
-});
-
-let mapDispatchToProps = (dispatch) => ({
-
-});
-
-let enhance = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)
+import { withRouter } from 'react-router-dom';
 
 class Query extends Component {
     constructor(props) {
-        super()
+        super(props)
         this.state = {
             query: '',
             results: [],
@@ -37,25 +28,48 @@ class Query extends Component {
             lat: this.props.currentLocation.lat,
             lng: this.props.currentLocation.lng,
         });
-        this.setState({ results })
+        this.setState({ results: results.results });
+    }
+
+    handleResultNav = (name) => () => {
+        this.props.history.push('/result/' + name)
     }
 
     render() {
         return (
         <div className="query">
+        {
+            this.props.currentLocation &&
             <QueryForm value={ this.state.query }
                 onChange={ this.handleQuery }
                 onClick={ this.sendQuery }
             />
-            {/* {
-                walks.map((walk, i) => 
-                    <ResultCard title={ walk.result } 
-                        distance={ calcDist(currentLocation) } 
-                    />
-                )
-            } */}
+        }
+        {
+            this.state.results.map((result, i) => 
+                <ResultCard key={ i }
+                    name={ result.name } 
+                    distance={ calcDistance(this.props.currentLocation, 
+                        result.geometry.location ) }
+                    onClick={ this.handleResultNav(result.name) }
+                />
+            )
+        }
         </div>
     )}
 }
 
-export default enhance(Query);
+let mapStateToProps = (state) => ({
+    currentLocation: state.currentLocation,
+});
+
+let mapDispatchToProps = (dispatch) => ({
+
+});
+
+let enhance = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
+
+export default withRouter(enhance(Query));

@@ -14,7 +14,7 @@ let App = () =>
     <div className="app">
       <Location />
       <Switch>
-        {/* <Route path="/result/:resultid" component={ Result } /> */}
+        <Route path="/result/:name" component={ Result } />
         <Route path="/" component={ Query } />
       </Switch>
     </div>

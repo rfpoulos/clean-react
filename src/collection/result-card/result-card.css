@@ -1,0 +1,6 @@
+.result-card {
+    display: flex;
+    width: 100%;
+    max-width: 20rem;
+    justify-content: space-between;
+}
