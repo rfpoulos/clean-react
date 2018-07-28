@@ -31,8 +31,8 @@ class Query extends Component {
         this.setState({ results: results.results });
     }
 
-    handleResultNav = (name) => () => {
-        this.props.history.push('/result/' + name)
+    handleResultNav = (id) => () => {
+        this.props.history.push('/result/' + id)
     }
 
     render() {
@@ -51,7 +51,7 @@ class Query extends Component {
                     name={ result.name } 
                     distance={ calcDistance(this.props.currentLocation, 
                         result.geometry.location ) }
-                    onClick={ this.handleResultNav(result.name) }
+                    onClick={ this.handleResultNav(result.place_id) }
                 />
             )
         }
