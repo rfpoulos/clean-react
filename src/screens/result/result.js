@@ -26,12 +26,13 @@ class Result extends Component {
     }
 
     render() {
+        let { ...props } = this.props;
         return (
         <div className="result">
             {
-                this.state.result && this.props.currentLocation &&
+                this.state.result && props.currentLocation &&
                 <ResultCard name={ this.state.result.name }
-                    distance={ calcDistance(this.props.currentLocation,
+                    distance={ calcDistance(props.currentLocation,
                         this.state.result.geometry.location) }
                 />
             }
